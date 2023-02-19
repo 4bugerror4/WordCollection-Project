@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head th:fragment="head(title)">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+        <!-- Custom styles for this template -->
+        <link th:href="@{../../css/dashboard.css}" rel="stylesheet">
+        <link th:href="@{../../css/modal.css}" rel="stylesheet">
+
+        <title th:text=${title}>영단어 집합소 - 메인</title>
+    </head>
+
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-2 shadow" th:fragment="header">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" th:href="@{/}">영단어 집합소</a>
+        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="text-end mx-3" sec:authorize="!isAuthenticated()">
+            <a th:href="@{/auth/login}" class="btn btn-outline-light me-2">로그인</a>
+            <a th:href="@{/auth/join}" class="btn btn-warning">회원가입</a>
+        </div>
+        
+        <div class="text-end mx-3" sec:authorize="isAuthenticated()">
+        	<a th:href="@{/user/my_profile}" class="btn btn-warning" sec:authentication="name"></a>
+            <a th:href="@{/logout}" class="btn btn-outline-light me-2">로그아웃</a>
+        </div>
+    </header>
+
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" th:fragment="nav(nav)">
+	    <div class="position-sticky pt-5 sidebar-sticky">
+		        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+		        <span>페이지</span>
+		        <a class="link-secondary" th:href="@{/}" aria-label="Add a new report">
+		            <span data-feather="plus-circle" class="align-text-bottom"></span>
+		        </a>
+		        </h6>
+		        <ul class="nav flex-column">
+		        <li class="nav-item">
+		            <a class="nav-link" aria-current="page" th:href="@{/}" th:classappend="${nav == 'index'} ? 'active' : ''">
+		            <span data-feather="home" class="align-text-bottom"></span>
+		            메인
+		            </a>
+		        </li>
+		        <li class="nav-item">
+		            <a class="nav-link" th:href="@{/list/users/total_word_list}" th:classappend="${nav == 'user_total_word'} ? 'active' : ''">
+		            <span data-feather="file" class="align-text-bottom"></span>
+		            전체 영단어
+		            </a>
+		        </li>
+		        <li class="nav-item">
+		            <a class="nav-link" th:href="@{/list/users/total_noun_list}" th:classappend="${nav == 'user_noun_word'} ? 'active' : ''">
+		            <span data-feather="shopping-cart" class="align-text-bottom"></span>
+		            전체 명사
+		            </a>
+		        </li>
+		        <li class="nav-item">
+		            <a class="nav-link" th:href="@{/list/users/total_verb_list}" th:classappend="${nav == 'user_verb_word'} ? 'active' : ''">
+		            <span data-feather="users" class="align-text-bottom"></span>
+		            전체 동사
+		            </a>
+		        </li>
+		        <li class="nav-item">
+		            <a class="nav-link" th:href="@{/list/users/total_adjective_list}" th:classappend="${nav == 'user_adj_word'} ? 'active' : ''">
+		            <span data-feather="bar-chart-2" class="align-text-bottom"></span>
+		            전체 형용사
+		            </a>
+		        </li>
+		        </ul>
+		        <hr />
+		
+		        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+		        <span>단어 상태</span>
+		        <a class="link-secondary" href="#" aria-label="Add a new report">
+		            <span data-feather="plus-circle" class="align-text-bottom"></span>
+		        </a>
+		        </h6>
+		        <ul class="nav flex-column">
+		        <li class="nav-item">
+		            <button class="nav-link" style="border: none; background-color: #f8f9fa" aria-current="page" data-bs-toggle="modal" data-bs-target="#wordAddModal">
+		            <span data-feather="home" class="align-text-bottom"></span>
+		            단어 추가
+		            </button>
+		        </li>
+		        <li class="nav-item">
+		            <button class="nav-link" style="border: none; background-color: #f8f9fa" aria-current="page" data-bs-toggle="modal" data-bs-target="#wordModifyDeleteModal">
+		            <span data-feather="home" class="align-text-bottom"></span>
+		            단어 수정/삭제
+		            </button>
+		        </li>
+		        </ul>
+		        <hr />
+		
+		        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+		        <span>유저 정보</span>
+		        <a class="link-secondary" href="#" aria-label="Add a new report">
+		            <span data-feather="plus-circle" class="align-text-bottom"></span>
+		        </a>
+		        </h6>
+		        <ul class="nav flex-column mb-2">
+		        <li class="nav-item" sec:authorize=!isAuthenticated()>
+		            <a class="nav-link" th:href="@{/auth/login}">
+		            <span data-feather="file-text" class="align-text-bottom"></span>
+		            로그인
+		            </a>
+		        </li>
+		        <li class="nav-item" sec:authorize=isAuthenticated()>
+		            <a class="nav-link" th:href="@{/logout}">
+		            <span data-feather="file-text" class="align-text-bottom"></span>
+		            로그아웃
+		            </a>
+		        </li>
+		        <li class="nav-item">
+		            <a class="nav-link" th:href="@{/user/my_profile}" th:classappend="${nav == 'my_profile' ? 'active' : ''}">
+		            <span data-feather="file-text" class="align-text-bottom"></span>
+		            프로필
+		            </a>
+		        </li>
+		        <li class="nav-item">
+		            <a class="nav-link" th:href="@{/user/my_modify}" th:classappend="${nav == 'my_modify' ? 'active' : ''}">
+		            <span data-feather="file-text" class="align-text-bottom"></span>
+		            프로필 수정
+		            </a>
+		        </li>
+		        <li class="nav-item">
+		            <a class="nav-link" th:href="@{/user/list}" th:classappend="${nav == 'user_list' ? 'active' : ''}">
+		            <span data-feather="file-text" class="align-text-bottom"></span>
+		            유저 리스트
+		            </a>
+		        </li>
+		        </ul>
+		    </div>
+	    </nav>
+	    
+	    <div class="btn-toolbar mb-2 mb-md-0" th:fragment="myListUrl(myListUrl)">
+            <div class="btn-toolbar mb-2 mb-md-0">
+             <span class="btn btn-sm" style="cursor: auto;"><span sec:authentication="name"></span> 회원님 : </span>
+             <div class="btn-group me-2">
+                 <a class="btn btn-sm btn-outline-secondary" th:href="@{/list/my/total_word_list}" th:classappend="${myListUrl == 'my_total_word' ? 'myListBtn' : ''}">전체</a>
+                 <a class="btn btn-sm btn-outline-secondary" th:href="@{/list/my/total_noun_list}" th:classappend="${myListUrl == 'my_noun_word' ? 'myListBtn' : ''}">명사</a>
+                 <a class="btn btn-sm btn-outline-secondary" th:href="@{/list/my/total_verb_list}" th:classappend="${myListUrl == 'my_verb_word' ? 'myListBtn' : ''}">동사</a>
+                 <a class="btn btn-sm btn-outline-secondary" th:href="@{/list/my/total_adjective_list}" th:classappend="${myListUrl == 'my_adj_word' ? 'myListBtn' : ''}">형용사</a>
+             </div>
+       		   </div>	
+        </div>
+        
+        
+      
+      <!-- Add Modal -->
+      <div class="modal fade" id="wordAddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" th:fragment="wordAddModal">
+          <div class="modal-dialog">
+              <div class="modal-content">
+              <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">단어 추가</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <form class="form-index">
+                      
+                      <label for="type" class="sr-only form-label">타입</label>
+                      <select class="form-control" autofocus>
+                          <option value="noun">명사</option>
+                          <option value="verb">동사</option>
+                          <option value="adjective">형용사</option>
+                      </select>
+                      
+                      <label for="word" class="sr-only form-label">단어</label>
+                      <input type="text" class="form-control" placeholder="단어" required>
+                      
+                      <label for="meaning" class="sr-only form-label">뜻</label>
+                      <input type="text" class="form-control" placeholder="뜻" required>
+                      
+                  </form>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-warning">추가</button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+              </div>
+              </div>
+          </div>
+      </div>
+      
+      <div aria-label="Page navigation example" th:fragment="pagingnation">
+          <ul class="pagination justify-content-center">
+              <li class="page-item disabled">
+              <a class="page-link">&lsaquo;</a>
+              </li>
+              <li class="page-item"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item">
+              <a class="page-link" href="#">&rsaquo;</a>
+              </li>
+          </ul>
+      </div>
+      
+      <span class="text-muted" th:fragment="footer">@ 대한민국 어디선가 만들었음 SDY</span>
+
+      <!-- Modify Delete Modal -->
+      <div class="modal fade" id="wordModifyDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" th:fragment="wordModifyDeleteModal">
+          <div class="modal-dialog">
+              <div class="modal-content">
+              <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">단어 수정/삭제</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <form class="form-index">
+                      
+                      <input type="hidden" id="wordId" />
+                      
+                      <label for="type" class="sr-only form-label">타입</label>
+                      <select class="form-control" autofocus>
+                          <option value="noun">명사</option>
+                          <option value="verb">동사</option>
+                          <option value="adjective">형용사</option>
+                      </select>
+                      
+                      <label for="word" class="sr-only form-label">단어</label>
+                      <input type="text" class="form-control" placeholder="단어" required>
+                      
+                      <label for="meaning" class="sr-only form-label">뜻</label>
+                      <input type="text" class="form-control" placeholder="뜻" required>
+                      
+                  </form>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-warning">수정</button>
+                  <button type="button" class="btn btn-danger">삭제</button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+              </div>
+              </div>
+          </div>
+      </div>
+      

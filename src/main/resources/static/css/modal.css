@@ -1,0 +1,33 @@
+@charset "UTF-8";
+
+.form-index {
+    padding: 15px;
+}
+
+.form-index .form-floating:focus-within {
+    z-index: 2;
+}
+
+.form-index input[type="text"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.form-index input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.form-index input[type="email"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.form-index select {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}

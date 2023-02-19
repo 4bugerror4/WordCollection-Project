@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head th:replace="~{fragments/common :: head('영단어 집합소 - 전체 회원 리스트')}">
+        <!-- /fragments/common :: head -->
+    </head>
+
+    <body>
+
+        <header th:replace="~{fragments/common :: header}">
+            <!-- /fragments/common :: header -->
+        </header>
+
+            <div class="container-fluid">
+	            <div class="row">
+	                <nav th:replace="~{fragments/common :: nav('user_list')}">
+	                	<!-- /fragments/common :: nav -->
+	                </nav>
+	
+	                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+				       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-4 pb-2 mb-3 border-bottom">
+				           <div class="h2">전체 유저 리스트</div>
+				           <div class="btn-toolbar mb-2 mb-md-0" th:replace="~{fragments/common :: myListUrl('user_list')}">
+				               <!-- /fragments/common :: myListUrl -->
+				           </div>
+				       </div>
+				
+				       <!-- ;; -->
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>번호</th>
+                                    <th>아이디</th>
+                                    <th>등급</th>
+                                    <th>명사</th>
+                                    <th>동사</th>
+                                    <th>형용사</th>
+                                    <th>부사</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>1</th>
+                                    <td>Mark</td>
+                                    <td>초보</td>
+                                    <td>100</td>
+                                    <td>25</td>
+                                    <td>65</td>
+                                    <td>40</td>
+                                </tr>
+
+                                <tr>
+                                    <th>2</th>
+                                    <td>Drew</td>
+                                    <td>초보</td>
+                                    <td>100</td>
+                                    <td>25</td>
+                                    <td>65</td>
+                                    <td>40</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- ;; -->
+				           
+			      </main>
+	            </div>
+            </div>
+
+            <!-- Add Modal -->
+            <div th:replace="~{fragments/common :: wordAddModal}">
+         		<!-- /fragments/common :: wordAddModal -->
+            </div>
+
+            <!-- Modify Delete Modal -->
+            <div th:replace="~{fragments/common :: wordModifyDeleteModal}">
+         		<!-- /fragments/common :: wordAddModal -->
+            </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
+    </body>
+</html>
