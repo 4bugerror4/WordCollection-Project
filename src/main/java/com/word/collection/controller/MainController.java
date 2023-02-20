@@ -1,15 +1,30 @@
 package com.word.collection.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.word.collection.entity.Word;
+import com.word.collection.serivce.WordService;
+
+import lombok.RequiredArgsConstructor;
+
 @Controller
+@RequiredArgsConstructor
 public class MainController {
+	
+	private final WordService wordService;
 
 	@GetMapping({ "", "/" })
-	public String main() {
+	public String main(Model model) {
+		
+		List<Word> words = wordService.randomWordList();
+		
+		model.addAttribute("words", words);
+		
 		return "index";
 	}
 

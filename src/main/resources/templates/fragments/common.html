@@ -6,8 +6,8 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 
         <!-- Custom styles for this template -->
-        <link th:href="@{../../css/dashboard.css}" rel="stylesheet">
-        <link th:href="@{../../css/modal.css}" rel="stylesheet">
+        <link th:href="@{/../../css/dashboard.css}" rel="stylesheet">
+        <link th:href="@{/../../css/modal.css}" rel="stylesheet">
 
         <title th:text=${title}>영단어 집합소 - 메인</title>
     </head>
@@ -146,7 +146,21 @@
        		   </div>	
         </div>
         
-        
+        <div aria-label="Page navigation example" th:fragment="pagingnation">
+          <ul class="pagination justify-content-center">
+              <li class="page-item" th:classappend="${1 == words.pageable.pageNumber + 1} ? 'disabled'">
+              	<a class="page-link" th:href="@{/list/my/total_word_list/(page=${words.pageable.pageNumber - 1})}">&lsaquo;</a>
+              </li>
+              <li class="page-item" th:classappend="${i == words.pageable.pageNumber + 1} ? 'disabled'" th:each="i : ${#numbers.sequence(startPage, endPage)}">
+              	<a class="page-link" th:href="@{/list/my/total_word_list/(page=${i - 1})}" th:text="${i}">1</a>
+              	</li>
+              <li class="page-item" th:classappend="${words.totalPages == words.pageable.pageNumber + 1} ? 'disabled'">
+              	<a class="page-link" th:href="@{/list/my/total_word_list/(page=${words.pageable.pageNumber + 1})}">&rsaquo;</a>
+              </li>
+          </ul>
+      </div>
+      
+      <span class="text-muted" th:fragment="footer">@ 대한민국 어디선가 만들었음 SDY</span>
       
       <!-- Add Modal -->
       <div class="modal fade" id="wordAddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" th:fragment="wordAddModal">
@@ -160,43 +174,27 @@
                   <form class="form-index">
                       
                       <label for="type" class="sr-only form-label">타입</label>
-                      <select class="form-control" autofocus>
+                      <select class="form-control" id="type" autofocus>
                           <option value="noun">명사</option>
                           <option value="verb">동사</option>
                           <option value="adjective">형용사</option>
                       </select>
                       
                       <label for="word" class="sr-only form-label">단어</label>
-                      <input type="text" class="form-control" placeholder="단어" required>
+                      <input type="text" id="eng" class="form-control" placeholder="단어" required>
                       
                       <label for="meaning" class="sr-only form-label">뜻</label>
-                      <input type="text" class="form-control" placeholder="뜻" required>
+                      <input type="text" id="kor" class="form-control" placeholder="뜻" required>
                       
                   </form>
               </div>
               <div class="modal-footer">
-                  <button type="button" class="btn btn-warning">추가</button>
+                  <button type="button" th:onclick="wordAdd()" class="btn btn-warning">추가</button>
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
               </div>
               </div>
           </div>
       </div>
-      
-      <div aria-label="Page navigation example" th:fragment="pagingnation">
-          <ul class="pagination justify-content-center">
-              <li class="page-item disabled">
-              <a class="page-link">&lsaquo;</a>
-              </li>
-              <li class="page-item"><a class="page-link" href="#">1</a></li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item"><a class="page-link" href="#">3</a></li>
-              <li class="page-item">
-              <a class="page-link" href="#">&rsaquo;</a>
-              </li>
-          </ul>
-      </div>
-      
-      <span class="text-muted" th:fragment="footer">@ 대한민국 어디선가 만들었음 SDY</span>
 
       <!-- Modify Delete Modal -->
       <div class="modal fade" id="wordModifyDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" th:fragment="wordModifyDeleteModal">
@@ -227,8 +225,8 @@
                   </form>
               </div>
               <div class="modal-footer">
-                  <button type="button" class="btn btn-warning">수정</button>
-                  <button type="button" class="btn btn-danger">삭제</button>
+                  <button type="button" th:onclick="wordModify()" class="btn btn-warning">수정</button>
+                  <button type="button" th:onclick="wordDelete()" class="btn btn-danger">삭제</button>
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
               </div>
               </div>
