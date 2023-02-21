@@ -27,9 +27,23 @@ public class ListController {
 	
 	// Users List
 	@GetMapping("/list/users/total_word_list")
-	public String userTotalWordList(Model model) {
+	public String userTotalWordList(Model model, @RequestParam(required = false, defaultValue = "") String searchType,
+			 @RequestParam(required = false, defaultValue = "") String searchText) {
 		
-		List<Word> words = wordService.findListAll();
+		List<Word> words = null;
+		
+		if (searchType.equals("eng")) {
+			
+			words = wordService.findByEngContaining(searchText);
+			
+		} else if (searchType.equals("kor")) {
+			
+			words = wordService.findByKorContaining(searchText);
+			
+		} else {
+			words = wordService.findListAll();
+		}
+		
 		int wordCount = words.size();
 		
 		model.addAttribute("words", words);
@@ -39,9 +53,23 @@ public class ListController {
 	}
 	
 	@GetMapping("/list/users/total_noun_list")
-	public String userNounWordList(Model model) {
+	public String userNounWordList(Model model, @RequestParam(required = false, defaultValue = "") String searchType,
+			 @RequestParam(required = false, defaultValue = "") String searchText) {
 		
-		List<Word> words = wordService.findWordType(WordType.noun);
+		List<Word> words = null;
+		
+		if (searchType.equals("eng")) {
+			
+			words = wordService.findByEngContainingAndType(searchText, WordType.noun);
+			
+		} else if (searchType.equals("kor")) {
+			
+			words = wordService.findByKorContainingAndType(searchText, WordType.noun);
+			
+		} else {
+			words = wordService.findWordType(WordType.noun);
+		}
+		
 		int wordCount = words.size();
 		
 		model.addAttribute("words", words);
@@ -51,9 +79,23 @@ public class ListController {
 	}
 	
 	@GetMapping("/list/users/total_verb_list")
-	public String userVerbWordList(Model model) {
+	public String userVerbWordList(Model model, @RequestParam(required = false, defaultValue = "") String searchType,
+			 @RequestParam(required = false, defaultValue = "") String searchText) {
 		
-		List<Word> words = wordService.findWordType(WordType.verb);
+		List<Word> words = null;
+		
+		if (searchType.equals("eng")) {
+			
+			words = wordService.findByEngContainingAndType(searchText, WordType.verb);
+			
+		} else if (searchType.equals("kor")) {
+			
+			words = wordService.findByKorContainingAndType(searchText, WordType.verb);
+			
+		} else {
+			words = wordService.findWordType(WordType.verb);
+		}
+		
 		int wordCount = words.size();
 		
 		model.addAttribute("words", words);
@@ -63,9 +105,23 @@ public class ListController {
 	}
 	
 	@GetMapping("/list/users/total_adjective_list")
-	public String userAdjectiveWordList(Model model) {
+	public String userAdjectiveWordList(Model model, @RequestParam(required = false, defaultValue = "") String searchType,
+			 @RequestParam(required = false, defaultValue = "") String searchText) {
 		
-		List<Word> words = wordService.findWordType(WordType.adjective);
+		List<Word> words = null;
+		
+		if (searchType.equals("eng")) {
+			
+			words = wordService.findByEngContainingAndType(searchText, WordType.adjective);
+			
+		} else if (searchType.equals("kor")) {
+			
+			words = wordService.findByKorContainingAndType(searchText, WordType.adjective);
+			
+		} else {
+			words = wordService.findWordType(WordType.adjective);
+		}
+		
 		int wordCount = words.size();
 		
 		model.addAttribute("words", words);
@@ -78,9 +134,22 @@ public class ListController {
 	@GetMapping("/list/my/total_word_list")
 	public String myTotalWordList(Model model, @PageableDefault(size=24, sort="id", direction = Direction.DESC) Pageable pageable,
 			@RequestParam(defaultValue = "", required = false) String searchText,
+			@RequestParam(defaultValue = "", required = false) String searchType,
 			@AuthenticationPrincipal CustomUserDetails principal) {
 
-		Page<Word> words = wordService.findByEngContainingOrKorContainingAndUserId(pageable, searchText, searchText, principal.getUserAccount().getId());
+		Page<Word> words = null;
+		if (searchType.equals("eng")) {
+			
+			words = wordService.findByUserIdAndEngContaining(pageable, principal.getUserAccount().getId(), searchText);
+			
+		} else if (searchType.equals("kor")) {
+			
+			words = wordService.findByUserIdAndKorContaining(pageable, principal.getUserAccount().getId(), searchText);
+			
+		} else {
+			words = wordService.findByUserId(pageable, principal.getUserAccount().getId());
+		}
+		
 		Long wordCount = words.getTotalElements();
 		
 		int startPage = Math.max(1, words.getPageable().getPageNumber() - 4);
@@ -97,11 +166,29 @@ public class ListController {
 	@GetMapping("/list/my/total_noun_list")
 	public String myNounWordList(Model model, @PageableDefault(size=24, sort="id", direction = Direction.DESC) Pageable pageable,
 			@RequestParam(defaultValue = "", required = false) String searchText,
+			@RequestParam(defaultValue = "", required = false) String searchType,
 			@AuthenticationPrincipal CustomUserDetails principal) {
 		
-		Page<Word> words = wordService.findByUserIdAndType(pageable, principal.getUserAccount().getId(), WordType.noun);
+		Page<Word> words = null;
+		if (searchType.equals("eng")) {
+			
+			words = wordService.findByUserIdAndEngContainingAndType(pageable, principal.getUserAccount().getId(), searchText, WordType.noun);
+			
+		} else if (searchType.equals("kor")) {
+			
+			words = wordService.findByUserIdAndKorContainingAndType(pageable, principal.getUserAccount().getId(), searchText, WordType.noun);
+			
+		} else {
+			words = wordService.findByUserIdAndType(pageable, principal.getUserAccount().getId(), WordType.noun);
+		}
+		
 		Long wordCount = words.getTotalElements();
 		
+		int startPage = Math.max(1, words.getPageable().getPageNumber() - 4);
+		int endPage = Math.min(words.getTotalPages(), words.getPageable().getPageNumber() + 4);
+		
+		model.addAttribute("startPage", startPage);
+		model.addAttribute("endPage", endPage);
 		model.addAttribute("words", words);
 		model.addAttribute("wordCount", wordCount);
 		
@@ -111,11 +198,29 @@ public class ListController {
 	@GetMapping("/list/my/total_verb_list")
 	public String myVerbWordList(Model model, @PageableDefault(size=24, sort="id", direction = Direction.DESC) Pageable pageable,
 			@RequestParam(defaultValue = "", required = false) String searchText,
+			@RequestParam(defaultValue = "", required = false) String searchType,
 			@AuthenticationPrincipal CustomUserDetails principal) {
 		
-		Page<Word> words = wordService.findByUserIdAndType(pageable, principal.getUserAccount().getId(), WordType.verb);
+		Page<Word> words = null;
+		if (searchType.equals("eng")) {
+			
+			words = wordService.findByUserIdAndEngContainingAndType(pageable, principal.getUserAccount().getId(), searchText, WordType.verb);
+			
+		} else if (searchType.equals("kor")) {
+			
+			words = wordService.findByUserIdAndKorContainingAndType(pageable, principal.getUserAccount().getId(), searchText, WordType.verb);
+			
+		} else {
+			words = wordService.findByUserIdAndType(pageable, principal.getUserAccount().getId(), WordType.verb);
+		}
+		
 		Long wordCount = words.getTotalElements();
 		
+		int startPage = Math.max(1, words.getPageable().getPageNumber() - 4);
+		int endPage = Math.min(words.getTotalPages(), words.getPageable().getPageNumber() + 4);
+		
+		model.addAttribute("startPage", startPage);
+		model.addAttribute("endPage", endPage);
 		model.addAttribute("words", words);
 		model.addAttribute("wordCount", wordCount);
 		
@@ -125,11 +230,29 @@ public class ListController {
 	@GetMapping("/list/my/total_adjective_list")
 	public String myAdjectiveWordList(Model model, @PageableDefault(size=24, sort="id", direction = Direction.DESC) Pageable pageable,
 			@RequestParam(defaultValue = "", required = false) String searchText,
+			@RequestParam(defaultValue = "", required = false) String searchType,
 			@AuthenticationPrincipal CustomUserDetails principal) {
 		
-		Page<Word> words = wordService.findByUserIdAndType(pageable, principal.getUserAccount().getId(), WordType.adjective);
+		Page<Word> words = null;
+		if (searchType.equals("eng")) {
+			
+			words = wordService.findByUserIdAndEngContainingAndType(pageable, principal.getUserAccount().getId(), searchText, WordType.adjective);
+			
+		} else if (searchType.equals("kor")) {
+			
+			words = wordService.findByUserIdAndKorContainingAndType(pageable, principal.getUserAccount().getId(), searchText, WordType.adjective);
+			
+		} else {
+			words = wordService.findByUserIdAndType(pageable, principal.getUserAccount().getId(), WordType.adjective);
+		}
+		
 		Long wordCount = words.getTotalElements();
 		
+		int startPage = Math.max(1, words.getPageable().getPageNumber() - 4);
+		int endPage = Math.min(words.getTotalPages(), words.getPageable().getPageNumber() + 4);
+		
+		model.addAttribute("startPage", startPage);
+		model.addAttribute("endPage", endPage);
 		model.addAttribute("words", words);
 		model.addAttribute("wordCount", wordCount);
 		

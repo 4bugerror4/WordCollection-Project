@@ -18,15 +18,15 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         
-        <div class="text-end mx-3" sec:authorize="!isAuthenticated()">
-            <a th:href="@{/auth/login}" class="btn btn-outline-light me-2">로그인</a>
-            <a th:href="@{/auth/join}" class="btn btn-warning">회원가입</a>
-        </div>
+<!--         <div class="text-end mx-3" sec:authorize="!isAuthenticated()"> -->
+<!--             <a th:href="@{/auth/login}" class="btn btn-outline-light me-2">로그인</a> -->
+<!--             <a th:href="@{/auth/join}" class="btn btn-warning">회원가입</a> -->
+<!--         </div> -->
         
-        <div class="text-end mx-3" sec:authorize="isAuthenticated()">
-        	<a th:href="@{/user/my_profile}" class="btn btn-warning" sec:authentication="name"></a>
-            <a th:href="@{/logout}" class="btn btn-outline-light me-2">로그아웃</a>
-        </div>
+<!--         <div class="text-end mx-3" sec:authorize="isAuthenticated()"> -->
+<!--         	<a th:href="@{/user/my_profile}" class="btn btn-warning" sec:authentication="name"></a> -->
+<!--             <a th:href="@{/logout}" class="btn btn-outline-light me-2">로그아웃</a> -->
+<!--         </div> -->
     </header>
 
     <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" th:fragment="nav(nav)">
@@ -70,28 +70,36 @@
 		        </li>
 		        </ul>
 		        <hr />
-		
-		        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
-		        <span>단어 상태</span>
-		        <a class="link-secondary" href="#" aria-label="Add a new report">
-		            <span data-feather="plus-circle" class="align-text-bottom"></span>
-		        </a>
-		        </h6>
-		        <ul class="nav flex-column">
-		        <li class="nav-item">
-		            <button class="nav-link" style="border: none; background-color: #f8f9fa" aria-current="page" data-bs-toggle="modal" data-bs-target="#wordAddModal">
-		            <span data-feather="home" class="align-text-bottom"></span>
-		            단어 추가
-		            </button>
-		        </li>
-		        <li class="nav-item">
-		            <button class="nav-link" style="border: none; background-color: #f8f9fa" aria-current="page" data-bs-toggle="modal" data-bs-target="#wordModifyDeleteModal">
-		            <span data-feather="home" class="align-text-bottom"></span>
-		            단어 수정/삭제
-		            </button>
-		        </li>
-		        </ul>
-		        <hr />
+		        
+		        <div sec:authorize="isAuthenticated()">
+			        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+			        <span>단어 상태</span>
+			        <a class="link-secondary" href="#" aria-label="Add a new report">
+			            <span data-feather="plus-circle" class="align-text-bottom"></span>
+			        </a>
+			        </h6>
+			        <ul class="nav flex-column">
+			        <li class="nav-item">
+			            <button class="nav-link" style="border: none; background-color: #f8f9fa" aria-current="page" data-bs-toggle="modal" data-bs-target="#wordAddModal">
+			            <span data-feather="home" class="align-text-bottom"></span>
+			            단어 추가
+			            </button>
+			        </li>
+			        <li class="nav-item">
+			            <a class="nav-link" th:href="@{/list/my/total_word_modify_delete_list}" th:classappend="${nav == 'my_word_modify_delete'} ? 'active' : ''">
+			            <span data-feather="bar-chart-2" class="align-text-bottom"></span>
+			            단어 수정/삭제
+			            </a>
+			        </li>
+<!-- 			        <li class="nav-item"> -->
+<!-- 			            <button class="nav-link" style="border: none; background-color: #f8f9fa" aria-current="page" data-bs-toggle="modal" data-bs-target="#wordModifyDeleteModal"> -->
+<!-- 			            <span data-feather="home" class="align-text-bottom"></span> -->
+<!-- 			            단어 수정/삭제 -->
+<!-- 			            </button> -->
+<!-- 			        </li> -->
+			        </ul>
+			        <hr />
+		        </div>
 		
 		        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
 		        <span>유저 정보</span>
@@ -106,13 +114,19 @@
 		            로그인
 		            </a>
 		        </li>
+		        <li class="nav-item" sec:authorize=!isAuthenticated()>
+		            <a class="nav-link" th:href="@{/auth/join}">
+		            <span data-feather="file-text" class="align-text-bottom"></span>
+		            회원가입
+		            </a>
+		        </li>
 		        <li class="nav-item" sec:authorize=isAuthenticated()>
 		            <a class="nav-link" th:href="@{/logout}">
 		            <span data-feather="file-text" class="align-text-bottom"></span>
 		            로그아웃
 		            </a>
 		        </li>
-		        <li class="nav-item">
+		        <li class="nav-item" sec:authorize=isAuthenticated()>
 		            <a class="nav-link" th:href="@{/user/my_profile}" th:classappend="${nav == 'my_profile' ? 'active' : ''}">
 		            <span data-feather="file-text" class="align-text-bottom"></span>
 		            프로필
@@ -124,12 +138,12 @@
 		            프로필 수정
 		            </a>
 		        </li>
-		        <li class="nav-item">
-		            <a class="nav-link" th:href="@{/user/list}" th:classappend="${nav == 'user_list' ? 'active' : ''}">
-		            <span data-feather="file-text" class="align-text-bottom"></span>
-		            유저 리스트
-		            </a>
-		        </li>
+<!-- 		        <li class="nav-item"> -->
+<!-- 		            <a class="nav-link" th:href="@{/user/list}" th:classappend="${nav == 'user_list' ? 'active' : ''}"> -->
+<!-- 		            <span data-feather="file-text" class="align-text-bottom"></span> -->
+<!-- 		            유저 리스트 -->
+<!-- 		            </a> -->
+<!-- 		        </li> -->
 		        </ul>
 		    </div>
 	    </nav>
@@ -145,20 +159,6 @@
              </div>
        		   </div>	
         </div>
-        
-        <div aria-label="Page navigation example" th:fragment="pagingnation">
-          <ul class="pagination justify-content-center">
-              <li class="page-item" th:classappend="${1 == words.pageable.pageNumber + 1} ? 'disabled'">
-              	<a class="page-link" th:href="@{/list/my/total_word_list/(page=${words.pageable.pageNumber - 1})}">&lsaquo;</a>
-              </li>
-              <li class="page-item" th:classappend="${i == words.pageable.pageNumber + 1} ? 'disabled'" th:each="i : ${#numbers.sequence(startPage, endPage)}">
-              	<a class="page-link" th:href="@{/list/my/total_word_list/(page=${i - 1})}" th:text="${i}">1</a>
-              	</li>
-              <li class="page-item" th:classappend="${words.totalPages == words.pageable.pageNumber + 1} ? 'disabled'">
-              	<a class="page-link" th:href="@{/list/my/total_word_list/(page=${words.pageable.pageNumber + 1})}">&rsaquo;</a>
-              </li>
-          </ul>
-      </div>
       
       <span class="text-muted" th:fragment="footer">@ 대한민국 어디선가 만들었음 SDY</span>
       
@@ -210,23 +210,22 @@
                       <input type="hidden" id="wordId" />
                       
                       <label for="type" class="sr-only form-label">타입</label>
-                      <select class="form-control" autofocus>
+                      <select class="form-control" id="modifyType" autofocus>
                           <option value="noun">명사</option>
                           <option value="verb">동사</option>
                           <option value="adjective">형용사</option>
                       </select>
                       
                       <label for="word" class="sr-only form-label">단어</label>
-                      <input type="text" class="form-control" placeholder="단어" required>
+                      <input type="text" class="form-control" placeholder="단어" id="modifyEng" required>
                       
                       <label for="meaning" class="sr-only form-label">뜻</label>
-                      <input type="text" class="form-control" placeholder="뜻" required>
+                      <input type="text" class="form-control" placeholder="뜻" id="modifyKor" required>
                       
                   </form>
               </div>
               <div class="modal-footer">
                   <button type="button" th:onclick="wordModify()" class="btn btn-warning">수정</button>
-                  <button type="button" th:onclick="wordDelete()" class="btn btn-danger">삭제</button>
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
               </div>
               </div>

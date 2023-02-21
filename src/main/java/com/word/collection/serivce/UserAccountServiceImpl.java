@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -78,8 +79,11 @@ public class UserAccountServiceImpl implements UserAccountService {
 		Path imageFilePath = Paths.get(uploadFolder + imageFileName);
 		
 		if (file.isEmpty()) {
-			if (user.getUserImageUrl().isEmpty()) {
+			
+			if (user.getUserImageUrl() != null) {
 				user.setUserImageUrl(user.getUserImageUrl());
+			} else if (user.getUserImageUrl() == null) {
+				user.setUserImageUrl(uploadFolder + "NoImage.png");
 			}
 			
 		} else {
@@ -138,6 +142,15 @@ public class UserAccountServiceImpl implements UserAccountService {
 			throw new CustomUserCheckApiException("이미 존재하는 이메일 입니다.", errorMap);
 		}
 
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<UserAccount> findUserAll() {
+
+		List<UserAccount> users = userAccountRepository.findAll();
+		
+		return users;
 	}
 
 }
