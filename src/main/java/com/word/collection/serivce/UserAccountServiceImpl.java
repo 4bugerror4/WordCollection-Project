@@ -153,4 +153,12 @@ public class UserAccountServiceImpl implements UserAccountService {
 		return users;
 	}
 
+	@Override
+	public UserAccount findById(Long id) {
+		
+		UserAccount user = userAccountRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 번호의 유저는 존재하지 않습니다."));
+
+		return user;
+	}
+
 }

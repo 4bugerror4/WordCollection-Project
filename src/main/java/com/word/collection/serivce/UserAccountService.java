@@ -8,6 +8,7 @@ import com.word.collection.entity.UserAccount;
 
 public interface UserAccountService {
 	
+	UserAccount findById(Long id);
 	UserAccount joinUser(UserAccount userAccount);
 	UserAccount findUsername(String username);
 	UserAccount modifyUser(UserAccount userAccount, MultipartFile file);
