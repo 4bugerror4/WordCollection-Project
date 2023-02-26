@@ -1,5 +1,7 @@
 package com.word.collection.serivce;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -53,7 +55,7 @@ public class BoardServiceImpl implements BoardService {
 		boardEntity.setTitle(board.getTitle());
 		boardEntity.setContent(board.getContent());
 		
-		return null;
+		return boardEntity;
 	}
 
 	@Transactional
@@ -77,6 +79,18 @@ public class BoardServiceImpl implements BoardService {
 			boardRepository.deleteById(id);
 		}
 		
+	}
+
+	@Override
+	public List<Board> findAll() {
+
+		return boardRepository.findAll();
+	}
+
+	@Override
+	public List<Board> findByTitleContainingOrContentContaining(String title, String content) {
+
+		return boardRepository.findByTitleContainingOrContentContaining(title, content);
 	}
 
 	

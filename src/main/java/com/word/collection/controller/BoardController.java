@@ -1,9 +1,5 @@
 package com.word.collection.controller;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -51,32 +47,11 @@ public class BoardController {
 	}
 	
 	@GetMapping("/board/list/{id}")
-	public String detail(Model model, @PathVariable Long id, @AuthenticationPrincipal CustomUserDetails principal,
-			HttpServletRequest request, HttpServletResponse response) {
+	public String detail(Model model, @PathVariable Long id, @AuthenticationPrincipal CustomUserDetails principal) {
 		
 		Board board = boardService.findById(id);
 		
-		Cookie cookie = new Cookie("id", "|"+principal.getUserAccount().getId()+"|");
-		cookie.setMaxAge(60 * 60 * 24);
-		response.addCookie(cookie);
-		
-		Cookie[] cookies = request.getCookies();
-		
-		System.out.println(cookies.toString());
-		Cookie viewCookie = null;
-		
-		if (cookies != null && cookies.length > 0) {
-			for (int i = 0; i < cookies.length; i++) {
-				if (cookies[i].getName().equals("id")) {
-					viewCookie = cookies[i];
-				}
-			}
-		}
-		System.out.println(viewCookie.getValue());
-		if (!viewCookie.getValue().equals("|"+principal.getUserAccount().getId()+"|")) {
-			
-			boardService.visited(board, principal.getUserAccount().getId());
-		}
+		boardService.visited(board, principal.getUserAccount().getId());
 		
 		model.addAttribute("board", board);
 		model.addAttribute("principal", principal);

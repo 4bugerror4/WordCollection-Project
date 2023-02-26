@@ -1,6 +1,7 @@
 package com.word.collection.controller.api;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -11,9 +12,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.word.collection.config.auth.CustomUserDetails;
@@ -31,6 +35,31 @@ import lombok.RequiredArgsConstructor;
 public class BoardApiController {
 	
 	private final BoardService boardService;
+	
+	@GetMapping("/api/boards")
+	public ResponseEntity<?> boards() {
+		
+		List<Board> boards = boardService.findAll();
+		
+		return new ResponseEntity<>(new CMRespDto<>(1, "게시판 목록 전체 리스트", boards), HttpStatus.OK);
+	}
+	
+	@GetMapping("/api/board/{id}")
+	public ResponseEntity<?> boards(@PathVariable Long id) {
+		
+		Board board = boardService.findById(id);
+		
+		return new ResponseEntity<>(new CMRespDto<>(1, "게시판 상세보기", board), HttpStatus.OK);
+	}
+	
+	@GetMapping("/api/board/search")
+	public ResponseEntity<?> searchBoard(@RequestParam(value = "", required = false) String searchText) {
+		
+		List<Board> boards = boardService.findByTitleContainingOrContentContaining(searchText, searchText);
+		
+		return new ResponseEntity<>(new CMRespDto<>(1, "게시판 글 검색 리스트", boards), HttpStatus.OK);
+	}
+	
 	
 	@PostMapping("/api/board/save")
 	public ResponseEntity<?> save(@Valid @RequestBody BoardAddDto dto, Errors errors, @AuthenticationPrincipal CustomUserDetails principal) {
@@ -67,9 +96,9 @@ public class BoardApiController {
 			
 		} else {
 			
-			boardService.modify(dto.toEntity());
+			Board board = boardService.modify(dto.toEntity());
 			
-			return new ResponseEntity<>(new CMRespDto<>(1, "게시글 수정 완료", null), HttpStatus.OK);
+			return new ResponseEntity<>(new CMRespDto<>(1, "게시글 수정 완료", board), HttpStatus.OK);
 		}
 		
 	}
